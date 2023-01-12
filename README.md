@@ -24,7 +24,7 @@
 ###	To run WorkMuter, run WorkMuter.exe.
 ### ----------------------------------------------------
 ### If you want to run the program at startup, make a shortcut to run.py or to WorkMuter.exe
-### place it in your startup folder. Windows + R and then shell::startup to find the folder
+### place it in your startup folder. Windows + R and then shell:startup to find the folder
 ##################################################################################
 
 ### Functionality:
