@@ -1,16 +1,16 @@
 ##################################################################################
-#-------------------------------    WORKMUTER    -------------------------------#
+# -------------------------------    WORKMUTER    -------------------------------#
 ##################################################################################
 
-### Intro
+# Intro
 ##################################################################################
-### This is WorkMuter. The idea is that you get to listen to music when you spend 
-### time in the apps that you need to work in. To discourage distractions, 
-### it will mute your music player when you aren't in the apps you want to work in.
-### To encourage you to work, it will unmute your music player when you are back in the right apps. 
+# This is WorkMuter. The idea is that you get to listen to music when you spend
+# time in the apps that you need to work in. To discourage distractions,
+# it will mute your music player when you aren't in the apps you want to work in.
+# To encourage you to work, it will unmute your music player when you are back in the right apps.
 ##################################################################################
 
-### Check out README.md for more info.
+# Check out README.md for more info.
 
 from enum import Enum
 from win32gui import GetForegroundWindow
@@ -20,20 +20,21 @@ import win32process
 import os
 import configparser
 
+
 class Mode(Enum):
     WHITELIST = 1,
     BLACKLIST = 2
 
 ###################################
-### --- USER SETTINGS BELOW --- ### 
+### --- USER SETTINGS BELOW --- ###
 ###################################
-### (Remnant from before there was a config file)
+# (Remnant from before there was a config file)
 
 
-# Tip: To find out the names of programs, you can run the program 
+# Tip: To find out the names of programs, you can run the program
 # and check the console after you open a program, or check the detailed view of task manager
 
-#If you're not using spotify, you can change the target app here
+# If you're not using spotify, you can change the target app here
 target_app = "Spotify.exe"
 
 # Working in apps that are not in the whitelist will mute the target app
@@ -45,8 +46,8 @@ whitelist = [
     "Spotify.exe",
 ]
 
-# In blacklist mode, by default apps will not mute target app, 
-# but blacklisted apps will, 
+# In blacklist mode, by default apps will not mute target app,
+# but blacklisted apps will,
 # target app unmutes when you leave the blacklisted app
 blacklist = [
     "Discord.exe",
@@ -54,7 +55,7 @@ blacklist = [
 ]
 
 
-#Pick a mode
+# Pick a mode
 mode = Mode.BLACKLIST
 # mode = Mode.WHITELIST
 
@@ -65,11 +66,11 @@ mode = Mode.BLACKLIST
 config = configparser.ConfigParser()
 read_file = config.read('config.ini')
 
-if(len(read_file) > 0): # succesfully read file
+if (len(read_file) > 0):  # succesfully read file
     target_app = config['target']['target_app']
     whitelist = config['whitelist']['whitelist'].splitlines()
     blacklist = config['blacklist']['blacklist'].splitlines()
-    if(config['mode']['mode'] == 'whitelist'):
+    if (config['mode']['mode'] == 'whitelist'):
         mode = Mode.WHITELIST
     else:
         mode = Mode.BLACKLIST
@@ -87,6 +88,7 @@ else:
 POLLING_INTERVAL = 0.5
 
 c = wmi.WMI()
+
 
 def get_app_path(hwnd):
     """Get applicatin path given hwnd."""
@@ -115,27 +117,33 @@ def get_app_name(hwnd):
     else:
         return exe
 
+
 def log(app_name, msg):
     """Log the app name."""
     print(str(app_name) + " " + str(msg))
 
+
 def mute_program(program):
     """Mute the program."""
-    os.system(os.getcwd() + "\\" + "nircmdc.exe muteappvolume " + program + " 1") # 0 unmutes the program
+    os.system(os.getcwd() + "\\" + "SoundVolumeView.exe /Mute " + '"' +
+              program + '"' + " 1")  # 1 unmutes the program
     log(program, "muted.")
+
 
 def unmute_program(program):
     """Unmute the program."""
-    os.system(os.getcwd() + "\\" + "nircmdc.exe muteappvolume " + program + " 0") # 1 mutes the program
+    os.system(os.getcwd() + "\\" + "SoundVolumeView.exe /Unmute " + '"' +
+              program + '"' + " 0")  # 0 mutes the program
     log(program, "unmuted.")
 
-#Main loop
-while(True):
+
+# Main loop
+while (True):
     time.sleep(POLLING_INTERVAL)
 
     app_name = get_app_name(GetForegroundWindow())
 
-    #we don't keep state nor check if the program is already muted, so we just mute/unmute it every time
+    # we don't keep state nor check if the program is already muted, so we just mute/unmute it every time
 
     if mode == Mode.WHITELIST:
         if app_name in whitelist or app_name == None:
@@ -145,8 +153,8 @@ while(True):
             log(app_name, "not in whitelist.")
             mute_program(target_app)
         continue
-    
-    if mode == Mode.BLACKLIST: 
+
+    if mode == Mode.BLACKLIST:
         if app_name in blacklist:
             log(app_name, "in blacklist.")
             mute_program(target_app)

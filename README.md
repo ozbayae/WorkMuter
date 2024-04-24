@@ -33,3 +33,8 @@ WorkMuterPython, for example with the following command. > pyinstaller --onefile
 To mute Windows applications, this program relies on nircmd, found here:
 https://www.nirsoft.net/utils/nircmd.html. I have included a zip to their full
 distribution package as per their licence agreement.
+
+## SoundVolumeView
+To mute Windows applications, this program relies on SoundVolumeView, found here:
+https://www.nirsoft.net/utils/sound_volume_view.html. I have included a zip to their full
+distribution package as per their licence agreement.
